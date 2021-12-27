@@ -59,7 +59,7 @@ data4b <- data4 %>%
   pivot_wider(names_from = "name", values_from = "range") %>%
   setNames(c("Event", "Rank", "Average", "Single"))
 
-# 
+# Format columns
 data5 <- data4b %>%
   filter(!str_detect(Event, "bf")) %>%
   filter(!str_detect(Event, "mbo")) %>%
@@ -87,68 +87,3 @@ data6 %>%
   column_spec(19, border_right = T) %>%
   footnote(general = "Using a 2021-12-20 export of the WCA data, the rank-based invese normal transform was applied to the best single and average times of all cubers per event. The 'Master' and 'Bronze' ranks are defined as less than or greater than three standard deviations from the mean, respectively, and the Diamond (D), Platinum (P), Gold (G), and Silver (S) ranks defined as successive 0.3 standard deviation intervals, starting from -3.0 to 2.7 to 2.7 and 3.0 standard deviations. For example, the `Diamond 1 (D1)` rank consists of cubers with a time between -3.0 and -2.7 standard deviations from the mean. The `%` column is an approximate (there are slight variations per event) indication of the percentage of cubers with times within the rank criteria, and the `Total` column is its cumulative sum.") %>%
   save_kable(file = "wca_ranking_system.html", self_contained = T)
-
-# get_ranks <- function(event, type, cap, df = data2) {
-#   # Set ranks
-#   data2 <- data %>%
-#     filter(eventId == event) %>%
-#     select(personId, {{ type }}) %>%
-#     filter({{ type }} > 0) %>%
-#     dplyr::mutate({{ type }} := {{ type }}/100) %>%
-#     group_by(personId) %>%
-#     dplyr::arrange({{ type }}) %>%
-#     slice(1) %>%
-#     ungroup() %>%
-#     dplyr::mutate(x = RNOmni::RankNorm({{ type }})) %>%
-#     dplyr::mutate(rank = cut(x, breaks = c(-Inf, seq(-3, 3, 0.3), Inf),
-#        labels = c("Master",
-#                   paste0("D", 1:5),
-#                   paste0("P", 1:5),
-#                   paste0("G", 1:5),
-#                   paste0("S", 1:5),
-#                   "Bronze")))
-#   
-#   # Return breaks in original scale
-#   breaks <- data2 %>%
-#     group_by(rank) %>%
-#     dplyr::summarize(min = plyr::round_any(min({{ type }}), 0.1), 
-#                      max = plyr::round_any(max({{ type }}), 0.1),
-#                      n = n()) %>%
-#     dplyr::mutate(pct = percent(n/sum(n), accuracy = 0.1))
-#   
-#   # Print a pretty table
-#   return(breaks %>% select(-rank, -n))
-#   # breaks %>%
-#   #   kbl(col.names = c("Rank", "Min", "Max", "Cubers", "Percent"),
-#   #       caption = paste(event, cap)) %>%
-#   #   kable_classic(full_width = F, html_font = "Cambria")
-#   # 
-#   # # return(list(data = data2, breaks = breaks, tab = tab))
-# }
-# ```
-# 
-# ```{r echo=F, results="asis"}
-# #unique(data$eventId)
-# args <- list(
-#   event = c("333", "333"),
-#   type = c(best, average),
-#   cap = c("Single", "Average")
-# )
-# pmap(args, get_ranks)
-# 
-# 
-# get_ranks("333", best, "Single")
-# get_ranks("333", average, "Average")
-# get_ranks("333oh", best, "Single")
-# get_ranks("333oh", average, "Average")
-# get_ranks("333bf", best, "Single")
-# get_ranks("333bf", average, "Average")
-# get_ranks("pyram", best, "Single")
-# get_ranks("pyram", average, "Average")
-# get_ranks("minx", best, "Single")
-# get_ranks("minx", average, "Average")
-# 
-# # for(e in data$eventId) {
-# #   get_ranks(data, e, best, "Single")
-# #   get_ranks(data, e, average, "Average")
-# # }
