@@ -18,7 +18,10 @@ library(glue)
 #   mutate(min = min/100)
 # 
 # write_csv(data2, "data/wca_2020-12-20.csv")
-data2 <- vroom("data/wca_2020-12-20.csv")
+
+# Convert 333fm single back to moves/integers
+data2 <- vroom("data/wca_2020-12-20.csv") %>%
+  mutate(min = ifelse(eventId == "333fm" & name == "best", min*100, min))
 
 # Calculate ranks for each event
 data3 <- data2 %>%
